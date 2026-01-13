@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Moj interaktivni sajt</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigacija -->
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#ponuda">Ponuda</a></li>
+            <li><a href="#o-nama">O nama</a></li>
+        </ul><!-- Kontakt sekcija -->
+<section id="kontakt">
+    <h2>Kontakt</h2>
+    <p>Pošaljite nam poruku putem ovog obrasca:</p>
+    
+    <form id="kontaktForm">
+        <input type="text" id="ime" placeholder="Vaše ime" required><br>
+        <input type="email" id="email" placeholder="Vaš email" required><br>
+        <textarea id="poruka" placeholder="Vaša poruka" required></textarea><br>
+        <button type="submit">Pošalji</button>
+    </form>
+</section>
+
+    </nav>
+
+    <!-- Home sekcija -->
+    <section id="home">
+        <h1>Dobrodošli na moj sajt!</h1>
+        <p>Ovo je početna stranica gde možete predstaviti svoju ličnost ili poslovanje.</p>
+        <button id="homeBtn">Klikni za poruku</button>
+    </section>
+
+    <!-- Ponuda sekcija -->
+    <!-- Ponuda sekcija -->
+<section id="ponuda">
+    <h2>Naša ponuda</h2>
+    <p>Ovde možete opisati proizvode ili usluge koje nudite.</p>
+    
+    <!-- Galerija -->
+    <div class="galerija">
+        <div class="slika">
+            <img src="slika.jpg" alt="Proizvod 1">
+            <p>Priceless</p>
+        </div>
+        <div class="slika">
+            <img src="slika2.png" alt="Proizvod 2">
+            <p>1.500.000 RSD</p>
+        </div>
+        <div class="slika">
+            <img src="slika3.jpg" alt="Proizvod 3">
+            <p>50 EUR</p>
+        </div>
+    </div>
+
+    <button id="ponudaBtn">Saznaj više</button>
+</section>
+
+
+    <!-- O nama sekcija -->
+    <section id="o-nama">
+        <h2>O nama</h2>
+        <p>Ovde možete napisati nešto o sebi ili svojoj firmi, iskustvu i viziji.</p>
+        <button id="oNamaBtn">Kontaktiraj nas</button>
+    </section>
+
+    <footer>
+        <p>Copyright © 2026 – Moj sajt</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
