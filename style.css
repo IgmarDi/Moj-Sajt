@@ -98,6 +98,57 @@ button {
 
 button:hover {
     background-color: #2980b9;
+}
+
+/* Tic Tac Toe Game */
+#ticTacToe {
+    background-color: #f0f0f0;
+}
+
+#gameStatus {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 15px 0;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    margin: 20px auto;
+    background-color: #333;
+    padding: 5px;
+    width: fit-content;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cell:hover {
+    background-color: #f9f9f9;
+}
+
+#resetBtn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background-color: #e74c3c;
+    font-size: 16px;
+}
+
+#resetBtn:hover {
+    background-color: #c0392b;
     transform: scale(1.05);
 }
 
