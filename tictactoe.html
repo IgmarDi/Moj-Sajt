@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic Tac Toe Igra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .game-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        #gameStatus {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0;
+            min-height: 30px;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-gap: 8px;
+            margin: 30px auto;
+            background-color: #333;
+            padding: 8px;
+            width: fit-content;
+            border-radius: 10px;
+        }
+
+        .cell {
+            width: 120px;
+            height: 120px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .cell:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .cell.x {
+            color: #667eea;
+        }
+
+        .cell.o {
+            color: #764ba2;
+        }
+
+        .cell.disabled {
+            cursor: not-allowed;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        #resetBtn {
+            background-color: #667eea;
+            color: white;
+        }
+
+        #resetBtn:hover {
+            background-color: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #closeBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #closeBtn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .stats {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Tic Tac Toe</h1>
+        <p id="gameStatus">Igrač X počinje!</p>
+        <div class="game-board" id="gameBoard">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div class="buttons">
+            <button id="resetBtn">Ponovi igru</button>
+            <button id="closeBtn">Zatvori</button>
+        </div>
+        <div class="stats">
+            <p>Klikni na polje da odigraš potez</p>
+        </div>
+    </div>
+
+    <script>
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+
+        const winningConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        const cells = document.querySelectorAll('.cell');
+        const gameStatus = document.getElementById('gameStatus');
+        const resetBtn = document.getElementById('resetBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', function() {
+                const index = this.getAttribute('data-index');
+                
+                if (board[index] !== '' || !gameActive) {
+                    return;
+                }
+                
+                board[index] = currentPlayer;
+                this.textContent = currentPlayer;
+                this.classList.add(currentPlayer.toLowerCase());
+                
+                checkWinner();
+                
+                if (gameActive) {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    gameStatus.textContent = `Igrač ${currentPlayer} je na redu!`;
+                }
+            });
+        });
+
+        function checkWinner() {
+            let hasWinner = false;
+            
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    gameStatus.textContent = `🎉 Igrač ${currentPlayer} je pobedio! 🎉`;
+                    gameActive = false;
+                    hasWinner = true;
+                    break;
+                }
+            }
+            
+            if (!hasWinner && board.every(cell => cell !== '')) {
+                gameStatus.textContent = "Rezultat je nerešen! 🤝";
+                gameActive = false;
+            }
+        }
+
+        resetBtn.addEventListener('click', function() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+            gameStatus.textContent = 'Igrač X počinje!';
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('x', 'o');
+            });
+        });
+
+        closeBtn.addEventListener('click', function() {
+            window.close();
+        });
+    </script>
+</body>
+</html>

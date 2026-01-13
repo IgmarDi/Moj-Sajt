@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kamen, Papir, Makaze</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .game-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .score-board {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .score-item h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .score-item p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        #gameStatus {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 15px;
+            margin: 30px auto;
+            width: fit-content;
+        }
+
+        .choice-btn {
+            padding: 20px;
+            font-size: 40px;
+            border: 3px solid #ddd;
+            background-color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: #f5576c;
+        }
+
+        .choice-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+            align-items: center;
+        }
+
+        .result-item {
+            text-align: center;
+        }
+
+        .result-item p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .result-item .emoji {
+            font-size: 60px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button.action-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        #resetBtn {
+            background-color: #f5576c;
+            color: white;
+        }
+
+        #resetBtn:hover {
+            background-color: #d63c4f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        #closeBtn {
+            background-color: #666;
+            color: white;
+        }
+
+        #closeBtn:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 102, 102, 0.4);
+        }
+
+        .rules {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Kamen, Papir, Makaze</h1>
+        <p class="subtitle">Igraj protiv računara</p>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <h3>Tvoj Skor</h3>
+                <p id="playerScore">0</p>
+            </div>
+            <div class="score-item">
+                <h3>Nerešeno</h3>
+                <p id="drawScore">0</p>
+            </div>
+            <div class="score-item">
+                <h3>Kompjuter</h3>
+                <p id="computerScore">0</p>
+            </div>
+        </div>
+
+        <p id="gameStatus">Bira tvoj potez!</p>
+
+        <div class="choices">
+            <button class="choice-btn" data-choice="kamen">🪨</button>
+            <button class="choice-btn" data-choice="papir">📄</button>
+            <button class="choice-btn" data-choice="makaze">✂️</button>
+        </div>
+
+        <div class="result" id="resultContainer" style="display: none;">
+            <div class="result-item">
+                <p>Tvoj izbor</p>
+                <div class="emoji" id="playerEmoji"></div>
+            </div>
+            <div class="result-item">
+                <p>Kompjuter</p>
+                <div class="emoji" id="computerEmoji"></div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button id="resetBtn" class="action-btn">Nova igra</button>
+            <button id="closeBtn" class="action-btn">Zatvori</button>
+        </div>
+
+        <div class="rules">
+            <p>🪨 Kamen pobeđuje makaze | 📄 Papir pobeđuje kamen | ✂️ Makaze pobeđuje papir</p>
+        </div>
+    </div>
+
+    <script>
+        let playerScore = 0;
+        let computerScore = 0;
+        let drawScore = 0;
+
+        const choices = {
+            kamen: '🪨',
+            papir: '📄',
+            makaze: '✂️'
+        };
+
+        const choiceBtns = document.querySelectorAll('.choice-btn');
+        const gameStatus = document.getElementById('gameStatus');
+        const playerScoreEl = document.getElementById('playerScore');
+        const computerScoreEl = document.getElementById('computerScore');
+        const drawScoreEl = document.getElementById('drawScore');
+        const resultContainer = document.getElementById('resultContainer');
+        const playerEmoji = document.getElementById('playerEmoji');
+        const computerEmoji = document.getElementById('computerEmoji');
+        const resetBtn = document.getElementById('resetBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        choiceBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const playerChoice = this.getAttribute('data-choice');
+                const computerChoice = getComputerChoice();
+                
+                playRound(playerChoice, computerChoice);
+            });
+        });
+
+        function getComputerChoice() {
+            const options = ['kamen', 'papir', 'makaze'];
+            return options[Math.floor(Math.random() * 3)];
+        }
+
+        function playRound(playerChoice, computerChoice) {
+            resultContainer.style.display = 'grid';
+            playerEmoji.textContent = choices[playerChoice];
+            computerEmoji.textContent = choices[computerChoice];
+
+            if (playerChoice === computerChoice) {
+                gameStatus.textContent = "Nerešeno! 🤝";
+                drawScore++;
+                drawScoreEl.textContent = drawScore;
+            } else if (
+                (playerChoice === 'kamen' && computerChoice === 'makaze') ||
+                (playerChoice === 'papir' && computerChoice === 'kamen') ||
+                (playerChoice === 'makaze' && computerChoice === 'papir')
+            ) {
+                gameStatus.textContent = "Pobedio si! 🎉";
+                playerScore++;
+                playerScoreEl.textContent = playerScore;
+            } else {
+                gameStatus.textContent = "Kompjuter je pobedio! 💻";
+                computerScore++;
+                computerScoreEl.textContent = computerScore;
+            }
+        }
+
+        resetBtn.addEventListener('click', function() {
+            playerScore = 0;
+            computerScore = 0;
+            drawScore = 0;
+            playerScoreEl.textContent = '0';
+            computerScoreEl.textContent = '0';
+            drawScoreEl.textContent = '0';
+            gameStatus.textContent = 'Bira tvoj potez!';
+            resultContainer.style.display = 'none';
+        });
+
+        closeBtn.addEventListener('click', function() {
+            window.close();
+        });
+    </script>
+</body>
+</html>

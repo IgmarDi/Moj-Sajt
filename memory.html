@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Memory Matching Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .game-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .stat-item h3 {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .memory-card {
+            width: 100%;
+            padding-bottom: 100%;
+            position: relative;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .memory-card-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card.flipped .memory-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched .memory-card-inner {
+            pointer-events: none;
+        }
+
+        .memory-card-front,
+        .memory-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+
+        .memory-card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 40px;
+        }
+
+        .memory-card-back {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched .memory-card-back {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .memory-card:hover:not(.flipped):not(.matched) .memory-card-front {
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        #resetBtn {
+            background-color: #667eea;
+            color: white;
+        }
+
+        #resetBtn:hover {
+            background-color: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #closeBtn {
+            background-color: #999;
+            color: white;
+        }
+
+        #closeBtn:hover {
+            background-color: #777;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(153, 153, 153, 0.4);
+        }
+
+        .message {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            min-height: 25px;
+        }
+
+        @media (max-width: 500px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .memory-card-front {
+                font-size: 24px;
+            }
+
+            .memory-card-back {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Memory Game</h1>
+        <p class="subtitle">Pronađi sve parove!</p>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <h3>Pokušaji</h3>
+                <p id="moves">0</p>
+            </div>
+            <div class="stat-item">
+                <h3>Pronađeni parovi</h3>
+                <p id="matches">0/8</p>
+            </div>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="game-board" id="gameBoard"></div>
+
+        <div class="buttons">
+            <button id="resetBtn">Nova igra</button>
+            <button id="closeBtn">Zatvori</button>
+        </div>
+    </div>
+
+    <script>
+        const emojis = ['🍎', '🍎', '🍌', '🍌', '🍒', '🍒', '🍓', '🍓', '🥝', '🥝', '🍊', '🍊', '🍉', '🍉', '🍍', '🍍'];
+        
+        let flipped = [];
+        let matched = [];
+        let moves = 0;
+        let isChecking = false;
+
+        const gameBoard = document.getElementById('gameBoard');
+        const movesEl = document.getElementById('moves');
+        const matchesEl = document.getElementById('matches');
+        const messageEl = document.getElementById('message');
+        const resetBtn = document.getElementById('resetBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        function shuffle(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initGame() {
+            flipped = [];
+            matched = [];
+            moves = 0;
+            isChecking = false;
+            movesEl.textContent = '0';
+            matchesEl.textContent = '0/8';
+            messageEl.textContent = '';
+            gameBoard.innerHTML = '';
+
+            const shuffledEmojis = shuffle(emojis);
+
+            shuffledEmojis.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+
+                card.innerHTML = `
+                    <div class="memory-card-inner">
+                        <div class="memory-card-front">?</div>
+                        <div class="memory-card-back">${emoji}</div>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => flipCard(card));
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (isChecking || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            flipped.push(card);
+
+            if (flipped.length === 2) {
+                isChecking = true;
+                moves++;
+                movesEl.textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flipped;
+
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matched.push(card1, card2);
+                matchesEl.textContent = `${matched.length / 2}/8`;
+
+                if (matched.length === emojis.length) {
+                    messageEl.textContent = `🎉 Pobedio si! Završio si u ${moves} poteza!`;
+                }
+
+                flipped = [];
+                isChecking = false;
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flipped = [];
+                    isChecking = false;
+                }, 1000);
+            }
+        }
+
+        resetBtn.addEventListener('click', initGame);
+        closeBtn.addEventListener('click', () => window.close());
+
+        initGame();
+    </script>
+</body>
+</html>
