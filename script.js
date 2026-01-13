@@ -130,6 +130,11 @@ resetBtn.addEventListener('click', function() {
     });
 });
 
+// Slika 2 - Tic Tac Toe
+document.getElementById('slika2Clickable').addEventListener('click', function() {
+    document.getElementById('ticTacToe').scrollIntoView({ behavior: 'smooth' });
+});
+
 // Kontakt forma
 document.getElementById("kontaktForm").addEventListener("submit", function(e){
     e.preventDefault(); // sprječava refresh stranice

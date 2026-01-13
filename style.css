@@ -149,7 +149,50 @@ button:hover {
 
 #resetBtn:hover {
     background-color: #c0392b;
+}
+
+/* Clickable image */
+#slika2Clickable {
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+#slika2Clickable:hover {
     transform: scale(1.05);
+}
+
+/* Responsive Design za mobilne uređaje */
+@media (max-width: 768px) {
+    .game-board {
+        grid-template-columns: repeat(3, 80px);
+    }
+    
+    .cell {
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-board {
+        grid-template-columns: repeat(3, 70px);
+    }
+    
+    .cell {
+        width: 70px;
+        height: 70px;
+        font-size: 24px;
+    }
+    
+    #gameStatus {
+        font-size: 16px;
+    }
+    
+    #resetBtn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
 }
 
 /* Footer */
