@@ -12,7 +12,16 @@
             <li><a href="#home">Home</a></li>
             <li><a href="#ponuda">Ponuda</a></li>
             <li><a href="#o-nama">O nama</a></li>
-        </ul><!-- Kontakt sekcija -->
+        </ul>
+        <button id="darkModeToggle" aria-label="Toggle dark mode">
+            <!-- Moon shown in light mode, Sun shown in dark mode -->
+            <svg class="icon icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+            <svg class="icon icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path fill="currentColor" d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.79 1.8-1.78zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zM4.22 19.78l1.79-1.79-1.8-1.79-1.79 1.79 1.8 1.79zM20 13h3v-2h-3v2zM17.24 4.84l1.8-1.79 1.79 1.79-1.79 1.79-1.8-1.79zM12 6a6 6 0 100 12 6 6 0 000-12zm0-6h-2v3h2V0zm0 18h-2v3h2v-3z"/>
+            </svg>
+        </button><!-- Kontakt sekcija -->
 <section id="kontakt">
     <h2>Kontakt</h2>
     <p>Pošaljite nam poruku putem ovog obrasca:</p>
@@ -42,19 +51,38 @@
     
     <!-- Galerija -->
     <div class="galerija">
-        <div class="slika" id="slika1Clickable">
-            <img src="Slika1.png.png" alt="Proizvod 1">
-            <p>Papir, kamen, makaze</p>
-        </div>
-        <div class="slika" id="slika2Clickable">
-            <img src="slika2.png" alt="Proizvod 2">
-            <p>Iks Oks</p>
-        </div>
-        <div class="slika" id="slika3Clickable">
-            <img src="slika3.jpg" alt="Proizvod 3">
-            <p>Memorijska igra
-            </p>
-        </div>
+        <article class="card" id="slika1Clickable" tabindex="0" role="button">
+            <div class="card-media">
+                <img src="Slika1.png.png" alt="Proizvod 1">
+                <button class="card-overlay" aria-label="Igraj">Igraj</button>
+            </div>
+            <div class="card-body">
+                <h3>Papir, kamen, makaze</h3>
+                
+            </div>
+        </article>
+
+        <article class="card" id="slika2Clickable" tabindex="0" role="button">
+            <div class="card-media">
+                <img src="slika2.png" alt="Proizvod 2">
+                <button class="card-overlay" aria-label="Igraj">Igraj</button>
+            </div>
+            <div class="card-body">
+                <h3>Iks Oks</h3>
+                
+            </div>
+        </article>
+
+        <article class="card" id="slika3Clickable" tabindex="0" role="button">
+            <div class="card-media">
+                <img src="slika3.jpg" alt="Proizvod 3">
+                <button class="card-overlay" aria-label="Igraj">Igraj</button>
+            </div>
+            <div class="card-body">
+                <h3>Memorijska igra</h3>
+                
+            </div>
+        </article>
     </div>
 
     <button id="ponudaBtn">Saznaj više</button>
