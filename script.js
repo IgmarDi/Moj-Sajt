@@ -61,19 +61,32 @@ document.getElementById("oNamaBtn").addEventListener("click", function () {
     alert("Kontaktirajte nas putem emaila ili telefona!");
 });
 
+// Funkcija za otvaranje igrice - radi na desktop i mobile
+function openGame(gameFile, gameName) {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        // Na mobilnom - direktno navigiraj na stranicu
+        window.location.href = gameFile;
+    } else {
+        // Na desktop-u - otvori novi prozor
+        window.open(gameFile, gameName, 'width=650,height=750,resizable=yes,scrollbars=no');
+    }
+}
+
 // Slika 1 - Rock Paper Scissors
 document.getElementById('slika1Clickable').addEventListener('click', function() {
-    window.open('rockpaperscissors.html', 'RockPaperScissors', 'width=650,height=750,resizable=yes,scrollbars=no');
+    openGame('rockpaperscissors.html', 'RockPaperScissors');
 });
 
 // Slika 2 - Tic Tac Toe
 document.getElementById('slika2Clickable').addEventListener('click', function() {
-    window.open('tictactoe.html', 'TicTacToe', 'width=600,height=700,resizable=yes,scrollbars=no');
+    openGame('tictactoe.html', 'TicTacToe');
 });
 
 // Slika 3 - Memory Game
 document.getElementById('slika3Clickable').addEventListener('click', function() {
-    window.open('memory.html', 'MemoryGame', 'width=650,height=750,resizable=yes,scrollbars=no');
+    openGame('memory.html', 'MemoryGame');
 });
 
 // Kontakt forma
