@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronađi Broj - Igra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --bg-light: #ffffff;
+            --bg-dark: #0f172a;
+            --text-light: #1e293b;
+            --text-dark: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        body.dark .container {
+            background: #1e293b;
+            color: var(--text-dark);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        body.dark .subtitle {
+            color: #94a3b8;
+        }
+
+        .game-content {
+            display: none;
+        }
+
+        .game-content.active {
+            display: block;
+        }
+
+        .setup-screen {
+            display: block;
+        }
+
+        .setup-screen.hidden {
+            display: none;
+        }
+
+        .difficulty-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-btn {
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body.dark .difficulty-btn {
+            background: #0f172a;
+            color: var(--text-dark);
+            border-color: #334155;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .difficulty-btn.easy {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .difficulty-btn.easy:hover {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .difficulty-btn.medium {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .difficulty-btn.medium:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .difficulty-btn.hard {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .difficulty-btn.hard:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .game-info {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        body.dark .game-info {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--text-dark);
+        }
+
+        .attempts-left {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        body.dark .attempts-left {
+            color: #a5b4fc;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        body.dark input[type="number"] {
+            background: #0f172a;
+            color: var(--text-dark);
+            border-color: #334155;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input[type="number"]::placeholder {
+            color: #94a3b8;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f4ff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        body.dark .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            color: #a5b4fc;
+            border-color: #a5b4fc;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.correct {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        body.dark .message.correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: #86efac;
+            border-left-color: #10b981;
+        }
+
+        .message.too-high {
+            background: #fee2e2;
+            color: #7f1d1d;
+            border-left: 4px solid #ef4444;
+        }
+
+        body.dark .message.too-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-left-color: #ef4444;
+        }
+
+        .message.too-low {
+            background: #fef3c7;
+            color: #78350f;
+            border-left: 4px solid var(--accent);
+        }
+
+        body.dark .message.too-low {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fde047;
+            border-left-color: var(--accent);
+        }
+
+        .stats {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        body.dark .stats {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--text-dark);
+        }
+
+        .stats.show {
+            display: block;
+        }
+
+        .stat-item {
+            margin: 8px 0;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        body.dark .stat-value {
+            color: #a5b4fc;
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #1e293b;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body.dark .back-btn {
+            background: #334155;
+            color: var(--text-dark);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .difficulty-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="dark-mode-toggle" id="darkToggle">🌙</button>
+
+    <div class="container">
+        <h1>🎯 Pronađi Broj</h1>
+        <p class="subtitle">Pogađaj broj koji sam zamislao!</p>
+
+        <!-- Setup Screen -->
+        <div class="setup-screen">
+            <p style="margin-bottom: 20px; color: #64748b;">Odaberi nivo težine:</p>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn easy" onclick="startGame(10)">
+                    🟢 LAKO (1-10)
+                </button>
+                <button class="difficulty-btn medium" onclick="startGame(100)">
+                    🟡 SREDNJE (1-100)
+                </button>
+                <button class="difficulty-btn hard" onclick="startGame(1000)">
+                    🔴 TEŠKO (1-1000)
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-content">
+            <div class="game-info">
+                Pokušaja: <span class="attempts-left" id="attemptsText">0</span>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <div class="stats" id="stats">
+                <div class="stat-item">Prikazane vrednosti:</div>
+                <div class="stat-item" id="guessesText"></div>
+            </div>
+
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    id="guessInput" 
+                    placeholder="Unesi broj..." 
+                    onkeypress="handleKeyPress(event)"
+                >
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="makeGuess()">
+                    Pokuša
+                </button>
+                <button class="btn-secondary" onclick="resetGame()">
+                    Početak
+                </button>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="goBack()">← Nazad na sajt</button>
+    </div>
+
+    <script>
+        let secretNumber;
+        let maxRange;
+        let attempts = 0;
+        let guesses = [];
+        let gameStarted = false;
+
+        function startGame(range) {
+            maxRange = range;
+            secretNumber = Math.floor(Math.random() * range) + 1;
+            attempts = 0;
+            guesses = [];
+            gameStarted = true;
+
+            document.querySelector('.setup-screen').classList.add('hidden');
+            document.querySelector('.game-content').classList.add('active');
+            document.getElementById('guessInput').focus();
+            updateDisplay();
+        }
+
+        function makeGuess() {
+            const guess = parseInt(document.getElementById('guessInput').value);
+
+            if (isNaN(guess) || guess < 1 || guess > maxRange) {
+                showMessage(`Molim unesi broj između 1 i ${maxRange}!`, 'too-high');
+                return;
+            }
+
+            attempts++;
+            guesses.push(guess);
+            document.getElementById('guessInput').value = '';
+
+            if (guess === secretNumber) {
+                showMessage(`🎉 BRAVO! Pronašao si broj ${secretNumber} za ${attempts} pokušaja!`, 'correct');
+                document.getElementById('guessInput').disabled = true;
+                document.querySelector('.btn-primary').disabled = true;
+            } else if (guess < secretNumber) {
+                showMessage(`📈 Broj je VEĆI od ${guess}. Pokuša ponovo!`, 'too-low');
+            } else {
+                showMessage(`📉 Broj je MANJI od ${guess}. Pokuša ponovo!`, 'too-high');
+            }
+
+            updateDisplay();
+            document.getElementById('guessInput').focus();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                makeGuess();
+            }
+        }
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
+            msgDiv.className = `message show ${type}`;
+            setTimeout(() => msgDiv.classList.remove('show'), 4000);
+        }
+
+        function updateDisplay() {
+            document.getElementById('attemptsText').textContent = attempts;
+
+            if (guesses.length > 0) {
+                document.getElementById('stats').classList.add('show');
+                document.getElementById('guessesText').textContent = guesses.join(', ');
+            }
+        }
+
+        function resetGame() {
+            document.querySelector('.setup-screen').classList.remove('hidden');
+            document.querySelector('.game-content').classList.remove('active');
+            document.getElementById('message').classList.remove('show');
+            document.getElementById('stats').classList.remove('show');
+            document.getElementById('guessInput').disabled = false;
+            document.querySelector('.btn-primary').disabled = false;
+            gameStarted = false;
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Dark mode
+        const darkToggle = document.getElementById('darkToggle');
+        
+        function applyDarkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('dark');
+                darkToggle.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark');
+                darkToggle.textContent = '🌙';
+            }
+            try { localStorage.setItem('numberGuessDarkMode', enabled ? '1' : '0'); } catch (e) {}
+        }
+
+        let saved = null;
+        try { saved = localStorage.getItem('numberGuessDarkMode'); } catch (e) {}
+        
+        if (saved === '1') {
+            applyDarkMode(true);
+        } else if (saved === '0') {
+            applyDarkMode(false);
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyDarkMode(prefersDark);
+        }
+
+        darkToggle.addEventListener('click', () => {
+            applyDarkMode(!document.body.classList.contains('dark'));
+        });
+    </script>
+</body>
+</html>
