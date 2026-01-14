@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Rezultati - Moj Sajt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark .container {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .dark-toggle {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            color: #667eea;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dark-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark .dark-toggle {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+            border-color: rgba(148, 163, 184, 0.5);
+        }
+
+        .leaderboard {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            gap: 20px;
+            align-items: center;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        body.dark .ranking-item {
+            background: #0f172a;
+            border-left-color: #a5b4fc;
+        }
+
+        .ranking-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .rank-position {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            color: #667eea;
+            min-width: 60px;
+        }
+
+        .rank-position.gold {
+            color: #f59e0b;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        .rank-position.silver {
+            color: #94a3b8;
+            text-shadow: 0 0 10px rgba(148, 163, 184, 0.5);
+        }
+
+        .rank-position.bronze {
+            color: #b45309;
+            text-shadow: 0 0 10px rgba(180, 83, 9, 0.5);
+        }
+
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .game-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+
+        body.dark .game-name {
+            color: #f1f5f9;
+        }
+
+        .game-description {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        body.dark .game-description {
+            color: #94a3b8;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #667eea;
+            text-align: right;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .no-data p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        body.dark .btn-secondary {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .ranking-item {
+                grid-template-columns: 50px 1fr auto;
+            }
+
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Top Rezultati</h1>
+            <button class="dark-toggle" id="darkToggle">🌙</button>
+        </div>
+
+        <div class="leaderboard" id="leaderboard">
+            <p class="no-data">📊 Nema rezultata. Zaigraj igre da pojavi rezultate!</p>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-primary" onclick="playRandomGame()">🎲 Nasumična Igra</button>
+            <button class="btn-secondary" onclick="goBack()">← Nazad</button>
+        </div>
+    </div>
+
+    <script>
+        const games = [
+            { name: 'Pronađi Broj', key: 'numberGuessScore', icon: '🎯' },
+            { name: 'Papir-Kamen-Makaze', key: 'rpsScore', icon: '✂️' },
+            { name: 'Iks-Oks', key: 'tictactoeScore', icon: '⭕' },
+            { name: 'Memorijska Igra', key: 'memoryScore', icon: '🧠' },
+            { name: 'Blackjack', key: 'blackjackScore', icon: '♠️' },
+            { name: 'Flappy Bird', key: 'flappyBestScore', icon: '🐦' },
+            { name: 'Color Match', key: 'colorMatchScore', icon: '🎨' },
+            { name: 'Simon', key: 'simonScore', icon: '🎮' }
+        ];
+
+        function getScores() {
+            const scores = [];
+            games.forEach((game, index) => {
+                const score = localStorage.getItem(game.key) || 0;
+                if (score > 0) {
+                    scores.push({
+                        rank: scores.length + 1,
+                        game: game.name,
+                        icon: game.icon,
+                        score: score
+                    });
+                }
+            });
+            return scores.sort((a, b) => b.score - a.score);
+        }
+
+        function displayLeaderboard() {
+            const scores = getScores();
+            const leaderboard = document.getElementById('leaderboard');
+
+            if (scores.length === 0) {
+                leaderboard.innerHTML = '<p class="no-data">📊 Nema rezultata. Zaigraj igre da pojavi rezultate!</p>';
+                return;
+            }
+
+            leaderboard.innerHTML = scores.map((item, index) => {
+                let positionClass = '';
+                if (index === 0) positionClass = 'gold';
+                else if (index === 1) positionClass = 'silver';
+                else if (index === 2) positionClass = 'bronze';
+
+                const medals = ['🥇', '🥈', '🥉'];
+                const medal = medals[index] || '';
+
+                return `
+                    <div class="ranking-item">
+                        <div class="rank-position ${positionClass}">${medal || index + 1}</div>
+                        <div class="game-info">
+                            <div class="game-name">${item.icon} ${item.game}</div>
+                            <div class="game-description">Najbolji rezultat</div>
+                        </div>
+                        <div>
+                            <div class="score">${item.score}</div>
+                            <div class="score-label">poena</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function playRandomGame() {
+            const gameFiles = [
+                'numberguess.html',
+                'rockpaperscissors.html',
+                'tictactoe.html',
+                'memory.html',
+                'blackjack.html',
+                'flappybird.html',
+                'colormatch.html',
+                'simon.html'
+            ];
+            const random = gameFiles[Math.floor(Math.random() * gameFiles.length)];
+            window.location.href = random;
+        }
+
+        function goBack() {
+            window.location.href = 'index.html#ponuda';
+        }
+
+        // Dark mode
+        const darkToggle = document.getElementById('darkToggle');
+        
+        function applyDarkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('dark');
+                darkToggle.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark');
+                darkToggle.textContent = '🌙';
+            }
+            try { localStorage.setItem('topResultsDarkMode', enabled ? '1' : '0'); } catch (e) {}
+        }
+
+        let saved = null;
+        try { saved = localStorage.getItem('topResultsDarkMode'); } catch (e) {}
+        
+        if (saved === '1') {
+            applyDarkMode(true);
+        } else if (saved === '0') {
+            applyDarkMode(false);
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyDarkMode(prefersDark);
+        }
+
+        darkToggle.addEventListener('click', () => {
+            applyDarkMode(!document.body.classList.contains('dark'));
+        });
+
+        displayLeaderboard();
+
+        // Osvežavanje svakih 5 sekundi
+        setInterval(displayLeaderboard, 5000);
+    </script>
+</body>
+</html>

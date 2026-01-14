@@ -16,6 +16,7 @@
         <ul class="nav-menu">
             <li><a href="#home" class="nav-link">Home</a></li>
             <li><a href="#ponuda" class="nav-link">Igre</a></li>
+            <li><a href="#sve-igre" class="nav-link">Sve Igre</a></li>
             <li><a href="#o-nama" class="nav-link">O meni</a></li>
             <li><a href="#kontakt" class="nav-link">Kontakt</a></li>
         </ul>
@@ -52,8 +53,60 @@
         <div class="galerija">
             <article class="card" id="slika1Clickable" tabindex="0" role="button">
                 <div class="card-media">
-                    <img src="Slika1.png.png" alt="Papir kamen makaze igra">
-                    <button class="card-overlay" aria-label="Igraj">▶ Igraj</button>
+                    <img src="Slika1.png.png" alt="Top rezultati">
+                    <button class="card-overlay" aria-label="Vidi">👁 Vidi</button>
+                </div>
+                <div class="card-body">
+                    <h3>🏆 Top Rezultati</h3>
+                    <p class="card-desc">Pogledaj najbolje skorove</p>
+                </div>
+            </article>
+
+            <article class="card" id="slika2Clickable" tabindex="0" role="button">
+                <div class="card-media">
+                    <img src="slika2.png" alt="Igra dana">
+                    <button class="card-overlay" aria-label="Igraj">🎲 Igraj</button>
+                </div>
+                <div class="card-body">
+                    <h3>🎯 Igra Dana</h3>
+                    <p class="card-desc">Nasumična igra</p>
+                </div>
+            </article>
+
+            <article class="card" id="slika3Clickable" tabindex="0" role="button">
+                <div class="card-media">
+                    <img src="slika3.jpg" alt="Novi izazovi">
+                    <button class="card-overlay" aria-label="Kreni">🔥 Kreni</button>
+                </div>
+                <div class="card-body">
+                    <h3>🔥 Novi Izazovi</h3>
+                    <p class="card-desc">Kompletiraj posebne izazove</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Sve Igre sekcija -->
+    <section id="sve-igre" class="games-section">
+        <div class="section-header">
+            <h2>Sve Igre 🎮</h2>
+            <p>Kompletna kolekcija svih dostupnih igara</p>
+        </div>
+        
+        <div class="galerija">
+            <article class="card" id="pronadi-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem; color: white;">🎯</span>
+                </div>
+                <div class="card-body">
+                    <h3>Pronađi Broj</h3>
+                    <p class="card-desc">Pogađaj broj - vodi te saveti!</p>
+                </div>
+            </article>
+
+            <article class="card" id="papir-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">✂️</span>
                 </div>
                 <div class="card-body">
                     <h3>Papir, Kamen, Makaze</h3>
@@ -61,10 +114,9 @@
                 </div>
             </article>
 
-            <article class="card" id="slika2Clickable" tabindex="0" role="button">
-                <div class="card-media">
-                    <img src="slika2.png" alt="Iks Oks igra">
-                    <button class="card-overlay" aria-label="Igraj">▶ Igraj</button>
+            <article class="card" id="tictactoe-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">⭕</span>
                 </div>
                 <div class="card-body">
                     <h3>Iks Oks</h3>
@@ -72,18 +124,58 @@
                 </div>
             </article>
 
-            <article class="card" id="slika3Clickable" tabindex="0" role="button">
-                <div class="card-media">
-                    <img src="slika3.jpg" alt="Memorijska igra">
-                    <button class="card-overlay" aria-label="Igraj">▶ Igraj</button>
+            <article class="card" id="memory-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">🧠</span>
                 </div>
                 <div class="card-body">
                     <h3>Memorijska Igra</h3>
                     <p class="card-desc">Testiraj svoje pamćenje</p>
                 </div>
             </article>
+
+            <article class="card" id="blackjack-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #2d5016 0%, #1a3a0a 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">♠️</span>
+                </div>
+                <div class="card-body">
+                    <h3>Blackjack</h3>
+                    <p class="card-desc">Kartaška igra protiv dilera</p>
+                </div>
+            </article>
+
+            <article class="card" id="flappy-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">🐦</span>
+                </div>
+                <div class="card-body">
+                    <h3>Flappy Bird</h3>
+                    <p class="card-desc">Arcade igra sa preprekama</p>
+                </div>
+            </article>
+
+            <article class="card" id="colormatch-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">🎨</span>
+                </div>
+                <div class="card-body">
+                    <h3>Color Match</h3>
+                    <p class="card-desc">Test refleksa - brzo i zabavno</p>
+                </div>
+            </article>
+
+            <article class="card" id="simon-clickable" tabindex="0" role="button">
+                <div class="card-media" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 3rem;">🎮</span>
+                </div>
+                <div class="card-body">
+                    <h3>Simon</h3>
+                    <p class="card-desc">Pamti boje i zvukove - izazov!</p>
+                </div>
+            </article>
         </div>
     </section>
+
     <!-- O nama sekcija -->
     <section id="o-nama" class="about-section">
         <div class="section-header">

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novi Izazovi - Moj Sajt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark .container {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .dark-toggle {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            color: #667eea;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dark-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark .dark-toggle {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+            border-color: rgba(148, 163, 184, 0.5);
+        }
+
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .challenge-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .challenge-card:hover::before {
+            left: 100%;
+        }
+
+        .challenge-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .challenge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .challenge-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .challenge-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .challenge-reward {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .challenge-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .locked-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .challenge-card.completed {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #34d399;
+        }
+
+        .completed-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .stats {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        body.dark .stats {
+            background: #0f172a;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        body.dark .stat-value {
+            color: #a5b4fc;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        body.dark .stat-label {
+            color: #94a3b8;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        body.dark .btn-secondary {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .challenges-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Novi Izazovi</h1>
+            <button class="dark-toggle" id="darkToggle">🌙</button>
+        </div>
+
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="completedCount">0</div>
+                    <div class="stat-label">Završenih</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPoints">0</div>
+                    <div class="stat-label">Ukupnih Poena</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="currentStreak">0</div>
+                    <div class="stat-label">Серија</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenges-grid" id="challengesGrid"></div>
+
+        <div class="btn-group">
+            <button class="btn-primary" onclick="resetChallenges()">🔄 Resetuj</button>
+            <button class="btn-secondary" onclick="goBack()">← Nazad</button>
+        </div>
+    </div>
+
+    <script>
+        const challenges = [
+            {
+                id: 1,
+                name: 'Početnik',
+                icon: '🌟',
+                description: 'Zaigraj bilo koju igru',
+                reward: '+10 поена',
+                points: 10
+            },
+            {
+                id: 2,
+                name: 'Brojač',
+                icon: '🎯',
+                description: 'Pronađi broj u 5 pokušaja',
+                reward: '+25 поена',
+                points: 25
+            },
+            {
+                id: 3,
+                name: 'Kartaš',
+                icon: '♠️',
+                description: 'Pobedi u Blackjack-u',
+                reward: '+30 поена',
+                points: 30
+            },
+            {
+                id: 4,
+                name: 'Памћење',
+                icon: '🧠',
+                description: 'Finiš memorijsku igru',
+                reward: '+20 поена',
+                points: 20
+            },
+            {
+                id: 5,
+                name: 'Лов на рекорде',
+                icon: '🏆',
+                description: 'Postavi 3 nova rekorda',
+                reward: '+50 поена',
+                points: 50
+            },
+            {
+                id: 6,
+                name: 'Играч од суитрена',
+                icon: '🎮',
+                description: 'Играј 5 различитих игара',
+                reward: '+40 поена',
+                points: 40
+            },
+            {
+                id: 7,
+                name: 'Мајстор Симон',
+                icon: '🎪',
+                description: 'Достигни ниво 10 у Simon-у',
+                reward: '+35 поена',
+                points: 35
+            },
+            {
+                id: 8,
+                name: 'Одлична рефлекс',
+                icon: '⚡',
+                description: 'Постигни 50+ у Color Match-у',
+                reward: '+45 поена',
+                points: 45
+            }
+        ];
+
+        function getChallengeStatus() {
+            const completed = [];
+            try {
+                const saved = localStorage.getItem('completedChallenges');
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function markChallengeComplete(challengeId) {
+            const completed = getChallengeStatus();
+            if (!completed.includes(challengeId)) {
+                completed.push(challengeId);
+                localStorage.setItem('completedChallenges', JSON.stringify(completed));
+            }
+        }
+
+        function displayChallenges() {
+            const completed = getChallengeStatus();
+            const grid = document.getElementById('challengesGrid');
+
+            grid.innerHTML = challenges.map(challenge => {
+                const isCompleted = completed.includes(challenge.id);
+                return `
+                    <div class="challenge-card ${isCompleted ? 'completed' : ''}" onclick="completeChallenge(${challenge.id})">
+                        ${isCompleted ? '<div class="completed-badge">✓ Завршено</div>' : ''}
+                        <div class="challenge-content">
+                            <div class="challenge-icon">${challenge.icon}</div>
+                            <div class="challenge-name">${challenge.name}</div>
+                            <div class="challenge-description">${challenge.description}</div>
+                            <div class="challenge-reward">${challenge.reward}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStats(completed);
+        }
+
+        function updateStats(completed) {
+            document.getElementById('completedCount').textContent = completed.length;
+            
+            const totalPoints = completed.reduce((sum, id) => {
+                const challenge = challenges.find(c => c.id === id);
+                return sum + (challenge ? challenge.points : 0);
+            }, 0);
+            
+            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('currentStreak').textContent = completed.length > 0 ? '🔥 ' + completed.length : 0;
+        }
+
+        function completeChallenge(challengeId) {
+            markChallengeComplete(challengeId);
+            displayChallenges();
+        }
+
+        function resetChallenges() {
+            if (confirm('Да ли сте сигурни да желите да ресетујете све изазове?')) {
+                localStorage.removeItem('completedChallenges');
+                displayChallenges();
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'index.html#ponuda';
+        }
+
+        // Dark mode
+        const darkToggle = document.getElementById('darkToggle');
+        
+        function applyDarkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('dark');
+                darkToggle.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark');
+                darkToggle.textContent = '🌙';
+            }
+            try { localStorage.setItem('challengesDarkMode', enabled ? '1' : '0'); } catch (e) {}
+        }
+
+        let saved = null;
+        try { saved = localStorage.getItem('challengesDarkMode'); } catch (e) {}
+        
+        if (saved === '1') {
+            applyDarkMode(true);
+        } else if (saved === '0') {
+            applyDarkMode(false);
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyDarkMode(prefersDark);
+        }
+
+        darkToggle.addEventListener('click', () => {
+            applyDarkMode(!document.body.classList.contains('dark'));
+        });
+
+        displayChallenges();
+    </script>
+</body>
+</html>

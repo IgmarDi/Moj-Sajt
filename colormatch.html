@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Match - Igra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .game-board {
+            display: none;
+        }
+
+        .game-board.active {
+            display: block;
+        }
+
+        .setup-screen {
+            display: block;
+        }
+
+        .setup-screen.hidden {
+            display: none;
+        }
+
+        .difficulty-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .difficulty-btn:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .play-area {
+            margin: 30px 0;
+        }
+
+        .color-display {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .info-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .color-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.correct {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .message.wrong {
+            background: #fee2e2;
+            color: #7f1d1d;
+            border: 2px solid #ef4444;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button.btn-action {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-restart {
+            background: #667eea;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-restart:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #1e293b;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Color Match</h1>
+        <p class="subtitle">Pronađi boju koja se poklapa!</p>
+
+        <!-- Setup Screen -->
+        <div class="setup-screen">
+            <p style="margin-bottom: 20px; color: #666;">Odaberi nivo:</p>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn" onclick="startGame('easy')">
+                    🟢 LAKO (4 boje)
+                </button>
+                <button class="difficulty-btn" onclick="startGame('medium')">
+                    🟡 SREDNJE (6 boja)
+                </button>
+                <button class="difficulty-btn" onclick="startGame('hard')">
+                    🔴 TEŠKO (8 boja)
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-board">
+            <div class="info-bar">
+                <div class="info-item">
+                    <div class="info-label">Poeni</div>
+                    <div class="info-value" id="score">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Vreme</div>
+                    <div class="info-value" id="timer">30</div>
+                </div>
+            </div>
+
+            <p style="margin-bottom: 20px; color: #666; font-weight: 600;">Klikni na boju koja se poklapa:</p>
+            
+            <div class="color-display" id="targetColor"></div>
+
+            <div id="message" class="message"></div>
+
+            <div class="color-options" id="colorOptions"></div>
+
+            <div class="buttons">
+                <button class="btn-restart" onclick="resetGame()">Ponovo</button>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="goBack()">← Nazad</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+        let currentColor = '';
+        let gameMode = '';
+        let timer = null;
+
+        const colors = {
+            red: '#EF4444',
+            blue: '#3B82F6',
+            green: '#10B981',
+            yellow: '#F59E0B',
+            purple: '#A855F7',
+            pink: '#EC4899',
+            cyan: '#06B6D4',
+            orange: '#F97316'
+        };
+
+        function startGame(mode) {
+            gameMode = mode;
+            const colorCount = mode === 'easy' ? 4 : mode === 'medium' ? 6 : 8;
+            
+            document.querySelector('.setup-screen').classList.add('hidden');
+            document.querySelector('.game-board').classList.add('active');
+            
+            score = 0;
+            timeLeft = 30;
+            gameActive = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('timer').textContent = timeLeft;
+
+            startTimer();
+            nextRound(colorCount);
+        }
+
+        function getRandomColor() {
+            const colorArray = Object.values(colors);
+            return colorArray[Math.floor(Math.random() * colorArray.length)];
+        }
+
+        function nextRound(count) {
+            if (!gameActive) return;
+
+            currentColor = getRandomColor();
+            document.getElementById('targetColor').style.background = currentColor;
+
+            const colorArray = Object.values(colors);
+            const shuffled = colorArray.sort(() => Math.random() - 0.5).slice(0, count);
+
+            if (!shuffled.includes(currentColor)) {
+                shuffled[Math.floor(Math.random() * count)] = currentColor;
+            }
+
+            const optionsContainer = document.getElementById('colorOptions');
+            optionsContainer.innerHTML = '';
+            optionsContainer.style.gridTemplateColumns = count === 4 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)';
+
+            shuffled.forEach(color => {
+                const btn = document.createElement('button');
+                btn.className = 'color-btn';
+                btn.style.background = color;
+                btn.onclick = () => checkColor(color);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkColor(selectedColor) {
+            if (!gameActive) return;
+
+            if (selectedColor === currentColor) {
+                score++;
+                document.getElementById('score').textContent = score;
+                showMessage('✅ Tačno!', 'correct');
+                
+                const colorCount = gameMode === 'easy' ? 4 : gameMode === 'medium' ? 6 : 8;
+                nextRound(colorCount);
+            } else {
+                showMessage('❌ Pogrešno!', 'wrong');
+            }
+        }
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
+            msgDiv.className = `message show ${type}`;
+            setTimeout(() => msgDiv.classList.remove('show'), 800);
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timer);
+            showMessage(`⏱️ Kraj vremena! Tvoj rezultat: ${score}`, 'correct');
+        }
+
+        function resetGame() {
+            document.querySelector('.setup-screen').classList.remove('hidden');
+            document.querySelector('.game-board').classList.remove('active');
+            document.getElementById('message').classList.remove('show');
+            clearInterval(timer);
+            gameActive = false;
+        }
+
+        function goBack() {
+            window.location.href = 'index.html#sve-igre';
+            clearInterval(timer);
+        }
+    </script>
+</body>
+</html>

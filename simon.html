@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon - Boje i Zvukovi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #bbb;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .simon-pad {
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.1s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .simon-pad:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .simon-pad:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .simon-pad:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .red {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF4444 100%);
+        }
+
+        .red.active {
+            background: linear-gradient(135deg, #FFB3B3 0%, #FF9999 100%);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+        }
+
+        .blue {
+            background: linear-gradient(135deg, #4ECDC4 0%, #00CED1 100%);
+        }
+
+        .blue.active {
+            background: linear-gradient(135deg, #9FE2E0 0%, #6FE8E8 100%);
+            box-shadow: 0 0 20px rgba(0, 206, 209, 0.8);
+        }
+
+        .green {
+            background: linear-gradient(135deg, #95E1D3 0%, #38A169 100%);
+        }
+
+        .green.active {
+            background: linear-gradient(135deg, #C6F3ED 0%, #68D391 100%);
+            box-shadow: 0 0 20px rgba(56, 161, 105, 0.8);
+        }
+
+        .yellow {
+            background: linear-gradient(135deg, #F0AD4E 0%, #FFD700 100%);
+        }
+
+        .yellow.active {
+            background: linear-gradient(135deg, #F5D896 0%, #FFED4E 100%);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-item {
+            display: inline-block;
+            margin: 0 30px;
+        }
+
+        .info-label {
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #4ECDC4;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button.btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #4ECDC4 0%, #00CED1 100%);
+            color: #1a1a2e;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-back {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .message {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.game-over {
+            background: rgba(255, 68, 68, 0.3);
+            border: 2px solid #FF6B6B;
+        }
+
+        .message.next-level {
+            background: rgba(56, 161, 105, 0.3);
+            border: 2px solid #38A169;
+        }
+
+        @media (max-width: 500px) {
+            .simon-pad {
+                width: 100px;
+                height: 100px;
+                font-size: 1.2rem;
+            }
+
+            .info-item {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button.btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 SIMON</h1>
+        <p class="subtitle">Pamti redosled boja i ponovi!</p>
+
+        <div class="info-section">
+            <div class="info-item">
+                <div class="info-label">Nivo</div>
+                <div class="info-value" id="level">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Status</div>
+                <div class="info-value" id="status">Spreman</div>
+            </div>
+        </div>
+
+        <div class="game-board">
+            <button class="simon-pad red" id="pad1" onclick="playerClick('red')" disabled>🔴</button>
+            <button class="simon-pad blue" id="pad2" onclick="playerClick('blue')" disabled>🔵</button>
+            <button class="simon-pad green" id="pad3" onclick="playerClick('green')" disabled>🟢</button>
+            <button class="simon-pad yellow" id="pad4" onclick="playerClick('yellow')" disabled>🟡</button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <div class="controls">
+            <button class="btn btn-start" onclick="startGame()">Počni</button>
+            <button class="btn btn-back" onclick="goBack()">Nazad</button>
+        </div>
+    </div>
+
+    <script>
+        const padIds = {
+            red: 'pad1',
+            blue: 'pad2',
+            green: 'pad3',
+            yellow: 'pad4'
+        };
+
+        const colors = ['red', 'blue', 'green', 'yellow'];
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        let sequence = [];
+        let playerSequence = [];
+        let level = 0;
+        let gameActive = false;
+
+        function playSound(color) {
+            const frequencies = {
+                red: 261.63,
+                blue: 329.63,
+                green: 392.00,
+                yellow: 523.25
+            };
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = frequencies[color];
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function lightUpPad(color) {
+            const pad = document.getElementById(padIds[color]);
+            pad.classList.add('active');
+            playSound(color);
+
+            setTimeout(() => {
+                pad.classList.remove('active');
+            }, 300);
+        }
+
+        function playSequence() {
+            gameActive = false;
+            disablePads();
+
+            const pads = document.querySelectorAll('.simon-pad');
+            pads.forEach(pad => pad.disabled = true);
+
+            sequence.forEach((color, index) => {
+                setTimeout(() => {
+                    lightUpPad(color);
+                }, (index + 1) * 600);
+            });
+
+            setTimeout(() => {
+                gameActive = true;
+                enablePads();
+                document.getElementById('status').textContent = 'Tvoj red!';
+            }, (sequence.length + 1) * 600);
+        }
+
+        function playerClick(color) {
+            if (!gameActive) return;
+
+            playerSequence.push(color);
+            lightUpPad(color);
+
+            if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
+                gameOver();
+                return;
+            }
+
+            if (playerSequence.length === sequence.length) {
+                gameActive = false;
+                playerSequence = [];
+                level++;
+                document.getElementById('level').textContent = level;
+                document.getElementById('status').textContent = `Nivo ${level}!`;
+                
+                showMessage(`🎉 Nivo ${level}!`, 'next-level');
+
+                setTimeout(() => {
+                    sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+                    playSequence();
+                }, 1500);
+            }
+        }
+
+        function startGame() {
+            sequence = [];
+            playerSequence = [];
+            level = 1;
+            gameActive = false;
+
+            document.getElementById('level').textContent = level;
+            document.getElementById('status').textContent = 'Počinjem...';
+            document.getElementById('message').classList.remove('show');
+
+            sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            
+            setTimeout(() => {
+                playSequence();
+            }, 1000);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            disablePads();
+            document.getElementById('status').textContent = 'Kraj!';
+            showMessage(`❌ Greška! Stigao si do nivoa ${level}!`, 'game-over');
+        }
+
+        function enablePads() {
+            document.querySelectorAll('.simon-pad').forEach(pad => pad.disabled = false);
+        }
+
+        function disablePads() {
+            document.querySelectorAll('.simon-pad').forEach(pad => pad.disabled = true);
+        }
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
+            msgDiv.className = `message show ${type}`;
+            setTimeout(() => msgDiv.classList.remove('show'), 3000);
+        }
+
+        function goBack() {
+            window.location.href = 'index.html#sve-igre';
+        }
+    </script>
+</body>
+</html>

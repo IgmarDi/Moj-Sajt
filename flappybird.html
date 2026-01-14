@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird - Igra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            position: relative;
+            width: 400px;
+            height: 600px;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            border: 3px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        #gameCanvas {
+            display: block;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            z-index: 10;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .best-score {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-start {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-back {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #0b7dda;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+        }
+
+        .game-over.show {
+            display: block;
+        }
+
+        .game-over h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .game-over p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .final-score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #4CAF50;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 500px) {
+            .game-container {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        
+        <div class="info-panel">
+            <div class="score">Poeni: <span id="score">0</span></div>
+            <div class="best-score">Best: <span id="bestScore">0</span></div>
+        </div>
+
+        <div class="game-over" id="gameOver">
+            <h2>GAME OVER!</h2>
+            <p>Tvoj rezultat:</p>
+            <div class="final-score" id="finalScore">0</div>
+            <p id="bestMessage"></p>
+        </div>
+
+        <div class="controls">
+            <button class="btn-start" onclick="toggleGame()" id="startBtn">Počni</button>
+            <button class="btn-back" onclick="goBack()">Nazad</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let score = 0;
+        let bestScore = localStorage.getItem('flappyBestScore') || 0;
+        let gameRunning = false;
+
+        // Ptica
+        const bird = {
+            x: 50,
+            y: 300,
+            width: 30,
+            height: 30,
+            gravity: 0.5,
+            jumpPower: -10,
+            velocity: 0
+        };
+
+        let pipes = [];
+        const pipeWidth = 50;
+        const pipeGap = 130;
+        const pipeDistance = 200;
+
+        function drawBird() {
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(bird.x + bird.width / 2, bird.y + bird.height / 2, bird.width / 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Oko
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(bird.x + 20, bird.y + 10, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawPipes() {
+            ctx.fillStyle = '#2ecc71';
+            pipes.forEach(pipe => {
+                // Top pipe
+                ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+                // Bottom pipe
+                ctx.fillRect(pipe.x, pipe.topHeight + pipeGap, pipeWidth, canvas.height - pipe.topHeight - pipeGap);
+            });
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+
+            // Gravityja
+            bird.velocity += bird.gravity;
+            bird.y += bird.velocity;
+
+            // Kreiraj nove cevi
+            if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - pipeDistance) {
+                const topHeight = Math.random() * (canvas.height - pipeGap - 100) + 50;
+                pipes.push({ x: canvas.width, topHeight });
+            }
+
+            // Pomeri cevi
+            pipes.forEach(pipe => {
+                pipe.x -= 5;
+            });
+
+            // Ukloni cevi koje su izašle iz ekrana
+            pipes = pipes.filter(pipe => {
+                if (pipe.x + pipeWidth < 0) {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                    return false;
+                }
+                return true;
+            });
+
+            // Provera kolizije
+            pipes.forEach(pipe => {
+                if (
+                    bird.x + bird.width > pipe.x &&
+                    bird.x < pipe.x + pipeWidth &&
+                    (bird.y < pipe.topHeight || bird.y + bird.height > pipe.topHeight + pipeGap)
+                ) {
+                    endGame();
+                }
+            });
+
+            // Provera da li je ptica izašla iz ekrana
+            if (bird.y + bird.height > canvas.height || bird.y < 0) {
+                endGame();
+            }
+
+            draw();
+        }
+
+        function draw() {
+            // Pozadina
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawPipes();
+            drawBird();
+        }
+
+        function startGame() {
+            gameRunning = true;
+            score = 0;
+            document.getElementById('score').textContent = score;
+            document.getElementById('gameOver').classList.remove('show');
+            bird.y = 300;
+            bird.velocity = 0;
+            pipes = [];
+        }
+
+        function endGame() {
+            gameRunning = false;
+            
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('flappyBestScore', bestScore);
+                document.getElementById('bestMessage').textContent = '🎉 Novi rekord!';
+            } else {
+                document.getElementById('bestMessage').textContent = `Tvoj best: ${bestScore}`;
+            }
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('bestScore').textContent = bestScore;
+            document.getElementById('gameOver').classList.add('show');
+        }
+
+        function toggleGame() {
+            if (gameRunning) {
+                endGame();
+            } else {
+                startGame();
+            }
+        }
+
+        function jump() {
+            if (gameRunning) {
+                bird.velocity = bird.jumpPower;
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'index.html#sve-igre';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                jump();
+            }
+        });
+
+        document.addEventListener('click', jump);
+        document.addEventListener('touchstart', jump);
+
+        document.getElementById('bestScore').textContent = bestScore;
+
+        // Game loop
+        const gameLoop = setInterval(updateGame, 1000 / 60);
+    </script>
+</body>
+</html>
